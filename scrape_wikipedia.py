@@ -1,34 +1,33 @@
 """
-Scrape women's rugby match attendance data from Wikipedia.
+Scrape women's rugby match attendance data from Wikipedia by parsing the
+raw wikitext {{rugbybox}} templates directly via the MediaWiki API.
 
-IMPORTANT: run this on your own machine, not in a sandboxed environment
-with restricted network access -- it needs to reach en.wikipedia.org.
+This is more reliable than scraping rendered HTML: Wikipedia rugby match
+reports use a structured template --
 
-    pip install requests beautifulsoup4 pandas lxml
+    {{rugbybox
+    |id = Ireland v France
+    |date = 22 March 2025
+    |team1 = {{ruw-rt|IRE}}
+    |score = 15-27
+    |team2 = {{ruw|FRA}}
+    |attendance = 6,976
+    |stadium = [[Ravenhill Stadium]], [[Belfast]]
+    |referee = ...
+    }}
+
+-- with named parameters, which mwparserfromhell can pull out directly
+instead of guessing at HTML table structure.
+
+Run on your own machine (needs outbound access to en.wikipedia.org):
+
+    pip install requests mwparserfromhell
     python scrape_wikipedia.py
 
-Wikipedia rugby articles use two different table layouts depending on
-the page, so this script tries both:
+Edit PAGES_TO_SCRAPE below, or pass Wikipedia page titles on the command
+line:
 
-  1. "Match report" boxes (class="vevent" or similar match-summary
-     templates) -- used on individual World Cup match pages and some
-     Six Nations round pages. Structured infobox-style: date, venue,
-     attendance, referee each on their own line.
-
-  2. Plain results tables -- used on some Six Nations season pages and
-     WXV pages. A single <table class="wikitable"> with columns like
-     Date | Home | Score | Away | Venue | Attendance.
-
-The script tries (1) first, falls back to (2), and if neither finds an
-"Attendance" field for a given page, it skips that page and logs it so
-you can check it manually -- it does NOT silently invent a number.
-
-Usage
------
-Edit PAGES_TO_SCRAPE below with the Wikipedia URLs you want, or pass
-them on the command line:
-
-    python scrape_wikipedia.py "https://en.wikipedia.org/wiki/2025_Women%27s_Six_Nations_Championship"
+    python scrape_wikipedia.py "2025 Women's Six Nations Championship"
 """
 
 from __future__ import annotations
@@ -36,32 +35,58 @@ from __future__ import annotations
 import re
 import sys
 import time
-from dataclasses import dataclass, asdict
-from io import StringIO
+from dataclasses import asdict, dataclass
 from pathlib import Path
 
+import mwparserfromhell
 import pandas as pd
 import requests
-from bs4 import BeautifulSoup
 
+SCRIPT_VERSION = "2024-07-10-v4-case-insensitive-params"
+
+API_URL = "https://en.wikipedia.org/w/api.php"
 HEADERS = {
-    # Wikipedia asks bots/scripts to identify themselves - be a good citizen
     "User-Agent": "WomensRugbyResearchBot/1.0 (personal research project; contact: set-your-email@example.com)"
 }
 
-OUTPUT_CSV = Path(__file__).parent.parent / "data" / "matches_verified.csv"
+OUTPUT_CSV = Path("/Users/svaradeshmukh/WRugby_Match_Prediction/data/matches_verified.csv")
 
 PAGES_TO_SCRAPE = [
-    "https://en.wikipedia.org/wiki/2025_Women%27s_Six_Nations_Championship",
-    "https://en.wikipedia.org/wiki/2024_Women%27s_Six_Nations_Championship",
-    "https://en.wikipedia.org/wiki/2023_Women%27s_Six_Nations_Championship",
-    "https://en.wikipedia.org/wiki/2025_WXV",
-    "https://en.wikipedia.org/wiki/2024_WXV",
-    "https://en.wikipedia.org/wiki/2025_Women%27s_Rugby_World_Cup_Pool_A",
-    "https://en.wikipedia.org/wiki/2025_Women%27s_Rugby_World_Cup_Pool_B",
-    "https://en.wikipedia.org/wiki/2025_Women%27s_Rugby_World_Cup_Pool_C",
-    "https://en.wikipedia.org/wiki/2025_Women%27s_Rugby_World_Cup_Pool_D",
+    "2025 Women's Six Nations Championship",
+    "2024 Women's Six Nations Championship",
+    "2023 Women's Six Nations Championship",
+    "2023 WXV",
+    "2024 WXV",
+    "2025 Women's Rugby World Cup Pool A",
+    "2025 Women's Rugby World Cup Pool B",
+    "2025 Women's Rugby World Cup Pool C",
+    "2025 Women's Rugby World Cup Pool D",
 ]
+
+# Rugby country/team template codes -> readable names.
+# Extend this as you hit codes not covered here -- the parser will keep
+# the raw code (e.g. "RSA") rather than silently guessing if it's missing.
+TEAM_CODE_TO_NAME = {
+    "IRE": "Ireland", "FRA": "France", "SCO": "Scotland", "WAL": "Wales",
+    "ENG": "England", "ITA": "Italy",
+    "NZL": "New Zealand", "AUS": "Australia", "CAN": "Canada", "USA": "United States",
+    "JPN": "Japan", "RSA": "South Africa", "ZAF": "South Africa", "ESP": "Spain",
+    "GER": "Germany", "NED": "Netherlands", "POR": "Portugal", "FIJI": "Fiji", "FIJ": "Fiji",
+    "SAM": "Samoa", "TON": "Tonga", "ARG": "Argentina", "BRA": "Brazil",
+    "MEX": "Mexico", "KOR": "South Korea", "HKG": "Hong Kong", "SWE": "Sweden",
+}
+
+
+def get_param_ci(template, *names: str) -> str | None:
+    """Look up a template parameter by name, tolerant of case and stray
+    whitespace (Wikipedia isn't perfectly consistent about this across
+    pages/years). Returns the first match among the given candidate names,
+    or None if none are present."""
+    wanted = {n.strip().lower() for n in names}
+    for p in template.params:
+        if str(p.name).strip().lower() in wanted:
+            return str(p.value)
+    return None
 
 
 @dataclass
@@ -73,6 +98,8 @@ class MatchRow:
     format: str
     home_team: str
     away_team: str
+    home_score: str
+    away_score: str
     venue: str
     city: str
     attendance: int
@@ -82,10 +109,75 @@ class MatchRow:
     source: str
 
 
-def fetch(url: str) -> BeautifulSoup:
-    resp = requests.get(url, headers=HEADERS, timeout=20)
+def fetch_wikitext(page_title: str) -> str:
+    """Fetch the raw wikitext of a page via the MediaWiki API."""
+    params = {
+        "action": "query",
+        "prop": "revisions",
+        "titles": page_title,
+        "rvslots": "main",
+        "rvprop": "content",
+        "format": "json",
+        "formatversion": "2",
+    }
+    resp = requests.get(API_URL, params=params, headers=HEADERS, timeout=20)
     resp.raise_for_status()
-    return BeautifulSoup(resp.text, "lxml")
+    data = resp.json()
+
+    pages = data.get("query", {}).get("pages", [])
+    if not pages or "missing" in pages[0]:
+        raise ValueError(f"Page not found: {page_title}")
+
+    return pages[0]["revisions"][0]["slots"]["main"]["content"]
+
+
+def clean_wikitext(value: str) -> str:
+    """Strip wikilinks/templates/refs down to plain readable text."""
+    if value is None:
+        return ""
+    wikicode = mwparserfromhell.parse(str(value))
+    text = wikicode.strip_code()
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def extract_team_code(team_param: str) -> str:
+    """Pull a country/team code out of a team1/team2 param like
+    '{{ruw-rt|IRE}}' or '(1 BP) {{ruw-rt|ENG}}', mapping to a readable name."""
+    wikicode = mwparserfromhell.parse(team_param)
+    templates = wikicode.filter_templates()
+    if templates:
+        tmpl = templates[0]
+        if tmpl.params:
+            code = str(tmpl.params[0].value).strip()
+            return TEAM_CODE_TO_NAME.get(code, code)
+    return clean_wikitext(team_param)
+
+
+def parse_score(score_param: str) -> tuple[str, str]:
+    """Split a score field like '15-27' or '24-21' into (home, away)."""
+    cleaned = clean_wikitext(score_param)
+    parts = re.split(r"[\u2013\u2012\-]", cleaned)
+    if len(parts) >= 2:
+        return parts[0].strip(), parts[1].strip()
+    return "", ""
+
+
+def parse_stadium(stadium_param: str) -> tuple[str, str]:
+    """Split '[[Ravenhill Stadium]], [[Belfast]]' into (venue, city)."""
+    cleaned = clean_wikitext(stadium_param)
+    parts = [p.strip() for p in cleaned.split(",")]
+    venue = parts[0] if parts else ""
+    city = parts[1] if len(parts) > 1 else ""
+    return venue, city
+
+
+def parse_date(date_param: str) -> str:
+    cleaned = clean_wikitext(date_param)
+    try:
+        return pd.to_datetime(cleaned).strftime("%Y-%m-%d")
+    except (ValueError, TypeError):
+        return cleaned
 
 
 def slugify(date: str, home: str, away: str) -> str:
@@ -93,144 +185,153 @@ def slugify(date: str, home: str, away: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", base).strip("_")
 
 
-def guess_competition(url: str) -> str:
-    if "Six_Nations" in url:
+def guess_competition(page_title: str) -> str:
+    if "Six Nations" in page_title:
         return "Six Nations"
-    if "WXV" in url:
+    if "WXV" in page_title:
         return "WXV"
-    if "Rugby_World_Cup" in url:
+    if "Rugby World Cup" in page_title:
         return "Rugby World Cup"
     return "Unknown"
 
 
-def parse_matchboxes(soup: BeautifulSoup, source_url: str) -> list[MatchRow]:
-    """Strategy 1: individual match-report infobox tables (class 'vevent' or similar)."""
+def is_rugbybox_template(template_name: str) -> bool:
+    """Wikipedia uses at least two different invocations for the same
+    match-report content: the {{rugbybox}} template (Six Nations pages)
+    and the {{#invoke:rugby box|main}} Lua module call (World Cup pool
+    pages). Both carry the same named parameters underneath."""
+    name = template_name.strip().lower()
+    return name == "rugbybox" or name.startswith("#invoke:rugby box")
+
+
+def find_all_headers(wikitext: str) -> list[tuple[int, str]]:
+    """Every '== Heading ==' / '=== Heading ===' regardless of level,
+    in document order with character position."""
+    pattern = re.compile(r"^=+\s*(.+?)\s*=+\s*$", re.MULTILINE)
+    return [(m.start(), m.group(1).strip()) for m in pattern.finditer(wikitext)]
+
+
+ROUND_KEYWORDS = re.compile(r"\b(pool|round|matchday|semi.?final|quarter.?final|final)\b", re.IGNORECASE)
+ROUND_KEYWORDS_WITH_LETTER = re.compile(r"\b(Pool [A-Z]|Round \d+|Semi.?final|Quarter.?final|Final)\b", re.IGNORECASE)
+
+
+def round_label_for_position(pos: int, headers: list[tuple[int, str]]) -> str:
+    """Walk backward through ALL headers (any level) and return the most
+    recent one that actually looks like a round/pool/stage label, skipping
+    per-match headers like 'England vs United States' along the way."""
+    current = ""
+    for header_pos, header_text in headers:
+        if header_pos > pos:
+            break
+        if ROUND_KEYWORDS.search(header_text):
+            current = header_text
+    return current
+
+
+def nearest_header(pos: int, headers: list[tuple[int, str]]) -> str:
+    """The single closest preceding header regardless of content -- on pool
+    pages this is usually the '=== Team A vs Team B ===' match subheading,
+    useful as a fallback for team names / final-detection."""
+    current = ""
+    for header_pos, header_text in headers:
+        if header_pos <= pos:
+            current = header_text
+        else:
+            break
+    return current
+
+
+def parse_rugbyboxes(wikitext: str, page_title: str) -> list[MatchRow]:
     rows: list[MatchRow] = []
-    competition = guess_competition(source_url)
+    competition = guess_competition(page_title)
+    headers = find_all_headers(wikitext)
 
-    # Wikipedia rugby match reports commonly use tables with class containing
-    # 'football' (a reused template family) or an explicit 'vevent' microformat.
-    boxes = soup.select("table.vevent, table.football-match-report, table.footballbox")
+    wikicode = mwparserfromhell.parse(wikitext)
+    for template in wikicode.filter_templates(matches=lambda t: is_rugbybox_template(t.name)):
+        try:
+            attendance_raw = get_param_ci(template, "attendance") or ""
+            attendance_match = re.search(r"[\d,]+", attendance_raw)
+            if not attendance_match:
+                continue  # no attendance data -- skip, don't guess
 
-    for box in boxes:
-        text = box.get_text(" ", strip=True)
+            attendance = int(attendance_match.group().replace(",", ""))
 
-        attendance_match = re.search(r"Attendance[:\s]*([\d,]+)", text)
-        if not attendance_match:
-            continue  # no attendance data in this box -- skip, don't guess
-        attendance = int(attendance_match.group(1).replace(",", ""))
+            date_raw = get_param_ci(template, "date")
+            date = parse_date(date_raw) if date_raw else ""
 
-        venue_match = re.search(r"Venue[:\s]*([^,\n]+?)(?=\s*(?:Attendance|Referee|$))", text)
-        venue = venue_match.group(1).strip() if venue_match else ""
+            # Different pages use team1/team2 in some years, home/away in others
+            home_raw = get_param_ci(template, "team1", "home")
+            away_raw = get_param_ci(template, "team2", "away")
+            home_team = extract_team_code(home_raw) if home_raw else ""
+            away_team = extract_team_code(away_raw) if away_raw else ""
 
-        date_match = re.search(r"(\d{1,2} \w+ \d{4})", text)
-        date = date_match.group(1) if date_match else ""
-        if date:
-            try:
-                date = pd.to_datetime(date).strftime("%Y-%m-%d")
-            except (ValueError, TypeError):
-                pass
+            score_raw = get_param_ci(template, "score")
+            home_score, away_score = parse_score(score_raw) if score_raw else ("", "")
 
-        # Team names: typically in <th> or specific score-cell classes
-        team_cells = box.select(".fhome, .fteam1, th.team-a") or box.select("th")
-        home_team = team_cells[0].get_text(strip=True) if team_cells else "Unknown"
-        away_cells = box.select(".faway, .fteam2, th.team-b")
-        away_team = away_cells[0].get_text(strip=True) if away_cells else "Unknown"
+            stadium_raw = get_param_ci(template, "stadium", "venue")
+            venue, city = parse_stadium(stadium_raw) if stadium_raw else ("", "")
 
-        rows.append(
-            MatchRow(
-                match_id=slugify(date, home_team, away_team),
-                date=date,
-                competition=competition,
-                round="",  # fill in manually -- not reliably parseable from the box alone
-                format="15s",
-                home_team=home_team,
-                away_team=away_team,
-                venue=venue,
-                city="",
-                attendance=attendance,
-                is_final=0,
-                is_opener=0,
-                years_since_prev_wc="",
-                source=source_url,
-            )
-        )
+            template_str = str(template)
+            pos = wikitext.find(template_str)
 
-    return rows
+            # 'id' param (Six Nations pages) vs subsection header fallback (World Cup pool pages)
+            id_raw = get_param_ci(template, "id")
+            match_label = clean_wikitext(id_raw) if id_raw else ""
+            if not match_label and pos != -1:
+                match_label = nearest_header(pos, headers)
 
+            # If team1/team2/home/away were missing or unresolved, fall back to
+            # splitting the "Team A v Team B" / "Team A vs Team B" subsection header/id.
+            if (not home_team or not away_team) and match_label:
+                vs_match = re.split(r"\s+v(?:s\.?)?\s+", match_label, flags=re.IGNORECASE)
+                if len(vs_match) == 2:
+                    home_team = home_team or vs_match[0].strip()
+                    away_team = away_team or vs_match[1].strip()
 
-def parse_results_table(soup: BeautifulSoup, source_url: str) -> list[MatchRow]:
-    """Strategy 2: plain wikitable with an 'Attendance' column."""
-    rows: list[MatchRow] = []
-    competition = guess_competition(source_url)
+            home_team = home_team or "Unknown"
+            away_team = away_team or "Unknown"
 
-    try:
-        tables = pd.read_html(StringIO(str(soup)))
-    except ValueError:
-        return rows
-
-    for table in tables:
-        cols_lower = [str(c).lower() for c in table.columns]
-        if not any("attendance" in c for c in cols_lower):
-            continue
-
-        col_map = {c.lower(): c for c in table.columns}
-        attendance_col = next(c for c in table.columns if "attendance" in str(c).lower())
-
-        date_col = col_map.get("date")
-        home_col = col_map.get("home") or col_map.get("home team")
-        away_col = col_map.get("away") or col_map.get("away team")
-        venue_col = col_map.get("venue") or col_map.get("stadium")
-
-        for _, r in table.iterrows():
-            raw_att = str(r.get(attendance_col, "")).replace(",", "")
-            att_match = re.search(r"\d+", raw_att)
-            if not att_match:
-                continue
-            attendance = int(att_match.group())
-
-            date_val = str(r.get(date_col, "")) if date_col else ""
-            try:
-                date_val = pd.to_datetime(date_val).strftime("%Y-%m-%d")
-            except (ValueError, TypeError):
-                pass
-
-            home = str(r.get(home_col, "Unknown")) if home_col else "Unknown"
-            away = str(r.get(away_col, "Unknown")) if away_col else "Unknown"
-            venue = str(r.get(venue_col, "")) if venue_col else ""
+            round_label = round_label_for_position(pos, headers) if pos != -1 else ""
+            if not round_label:
+                title_round_match = ROUND_KEYWORDS_WITH_LETTER.search(page_title)
+                if title_round_match:
+                    round_label = title_round_match.group(0)
+            is_final = int("final" in round_label.lower() or "final" in match_label.lower())
 
             rows.append(
                 MatchRow(
-                    match_id=slugify(date_val, home, away),
-                    date=date_val,
+                    match_id=slugify(date, home_team, away_team),
+                    date=date,
                     competition=competition,
-                    round="",
+                    round=round_label,
                     format="15s",
-                    home_team=home,
-                    away_team=away,
+                    home_team=home_team,
+                    away_team=away_team,
+                    home_score=home_score,
+                    away_score=away_score,
                     venue=venue,
-                    city="",
+                    city=city,
                     attendance=attendance,
-                    is_final=0,
+                    is_final=is_final,
                     is_opener=0,
                     years_since_prev_wc="",
-                    source=source_url,
+                    source=f"https://en.wikipedia.org/wiki/{page_title.replace(' ', '_')}",
                 )
             )
+        except (AttributeError, ValueError) as e:
+            print(f"  Skipping a malformed rugbybox template: {e}")
+            continue
 
     return rows
 
 
-def scrape_page(url: str) -> list[MatchRow]:
-    print(f"Fetching {url} ...")
-    soup = fetch(url)
-
-    rows = parse_matchboxes(soup, url)
-    if not rows:
-        rows = parse_results_table(soup, url)
+def scrape_page(page_title: str) -> list[MatchRow]:
+    print(f"Fetching '{page_title}' ...")
+    wikitext = fetch_wikitext(page_title)
+    rows = parse_rugbyboxes(wikitext, page_title)
 
     if not rows:
-        print(f"  WARNING: no attendance data found on this page -- check manually: {url}")
+        print(f"  WARNING: no rugbybox templates with attendance found -- check manually.")
     else:
         print(f"  Found {len(rows)} matches with attendance data.")
 
@@ -252,26 +353,23 @@ def merge_into_csv(new_rows: list[MatchRow]) -> None:
 
 
 def main():
+    print(f"scrape_wikipedia.py version: {SCRIPT_VERSION}\n")
     pages = sys.argv[1:] if len(sys.argv) > 1 else PAGES_TO_SCRAPE
 
     all_rows: list[MatchRow] = []
-    for url in pages:
+    for title in pages:
         try:
-            all_rows.extend(scrape_page(url))
-        except requests.RequestException as e:
-            print(f"  ERROR fetching {url}: {e}")
+            all_rows.extend(scrape_page(title))
+        except (requests.RequestException, ValueError) as e:
+            print(f"  ERROR fetching '{title}': {e}")
         time.sleep(1)  # be polite to Wikipedia's servers
 
     if not all_rows:
-        print("\nNo rows scraped. Wikipedia's table structure may not match this")
-        print("script's assumptions for these pages -- open one in a browser,")
-        print("inspect the table HTML, and adjust parse_matchboxes/parse_results_table.")
+        print("\nNo rows scraped. Check page titles are exact (including apostrophes)")
+        print("and that these pages still use the {{rugbybox}} template.")
         return
 
     print(f"\nTotal scraped rows before dedup/merge: {len(all_rows)}")
-    print("\nReview these before merging -- team names, venues, and rounds")
-    print("often need manual cleanup after scraping (Wikipedia markup varies")
-    print("page to page). Printing first 10 for a sanity check:\n")
     preview = pd.DataFrame([asdict(r) for r in all_rows[:10]])
     print(preview.to_string(index=False))
 

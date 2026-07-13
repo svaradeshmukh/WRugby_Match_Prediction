@@ -1,0 +1,83 @@
+match_id,date,competition,round,format,home_team,away_team,home_score,away_score,venue,city,attendance,is_final,is_opener,years_since_prev_wc,source
+2025_03_22_ireland_france,2025-03-22,Six Nations,Round 1,15s,Ireland,France,15,27,Ravenhill Stadium,Belfast,6976,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_03_22_scotland_wales,2025-03-22,Six Nations,Round 1,15s,Scotland,Wales,24,21,Edinburgh Rugby Stadium,Edinburgh,4234,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_03_23_england_italy,2025-03-23,Six Nations,Round 1,15s,England,Italy,38,5,York Community Stadium,York,8381,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_03_29_france_scotland,2025-03-29,Six Nations,Round 2,15s,France,Scotland,38,15,Stade Marcel-Deflandre,La Rochelle,15000,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_03_29_wales_england,2025-03-29,Six Nations,Round 2,15s,Wales,England,12,67,Millennium Stadium,Cardiff,21186,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_03_30_italy_ireland,2025-03-30,Six Nations,Round 2,15s,Italy,Ireland,12,54,Stadio Sergio Lanfranchi,Parma,3337,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_04_12_france_wales,2025-04-12,Six Nations,Round 3,15s,France,Wales,42,12,Stade Amédée-Domenech,Brive-la-Gaillarde,12738,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_04_12_ireland_england,2025-04-12,Six Nations,Round 3,15s,Ireland,England,5,49,Musgrave Park,Cork,7754,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_04_13_scotland_italy,2025-04-13,Six Nations,Round 3,15s,Scotland,Italy,17,25,Edinburgh Rugby Stadium,Edinburgh,5029,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_04_19_italy_france,2025-04-19,Six Nations,Round 4,15s,Italy,France,21,34,Stadio Sergio Lanfranchi,Parma,1916,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_04_19_england_scotland,2025-04-19,Six Nations,Round 4,15s,England,Scotland,59,7,Welford Road,Leicester,15530,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_04_20_wales_ireland,2025-04-20,Six Nations,Round 4,15s,Wales,Ireland,14,40,Rodney Parade,Newport,3568,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_04_26_scotland_ireland,2025-04-26,Six Nations,Round 5,15s,Scotland,Ireland,26,19,Edinburgh Rugby Stadium,Edinburgh,6375,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_04_26_england_france,2025-04-26,Six Nations,Round 5,15s,England,France,43,42,Twickenham Stadium,London,37573,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2025_04_27_italy_wales,2025-04-27,Six Nations,Round 5,15s,Italy,Wales,44,12,Stadio Sergio Lanfranchi,Parma,1899,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Six_Nations_Championship
+2024_03_23_france_ireland,2024-03-23,Six Nations,Round 1,15s,France,Ireland,38,17,Stade Marie-Marvingt,Le Mans,15559,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_03_23_wales_scotland,2024-03-23,Six Nations,Round 1,15s,Wales,Scotland,18,20,Cardiff Arms Park,Cardiff,5965,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_03_24_italy_england,2024-03-24,Six Nations,Round 1,15s,Italy,England,0,48,Stadio Sergio Lanfranchi,Parma,3600,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_03_30_scotland_france,2024-03-30,Six Nations,Round 2,15s,Scotland,France,5,15,Edinburgh Rugby Stadium,Edinburgh,5000,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_03_30_england_wales,2024-03-30,Six Nations,Round 2,15s,England,Wales,46,10,Ashton Gate,Bristol,19705,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_03_31_ireland_italy,2024-03-31,Six Nations,Round 2,15s,Ireland,Italy,21,27,RDS Arena,Dublin,6605,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_04_13_scotland_england,2024-04-13,Six Nations,Round 3,15s,Scotland,England,0,46,Edinburgh Rugby Stadium,Edinburgh,7774,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_04_13_ireland_wales,2024-04-13,Six Nations,Round 3,15s,Ireland,Wales,36,5,Musgrave Park,Cork,6139,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_04_14_france_italy,2024-04-14,Six Nations,Round 3,15s,France,Italy,38,15,Stade Jean-Bouin,Paris,13586,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_04_20_england_ireland,2024-04-20,Six Nations,Round 4,15s,England,Ireland,88,10,Twickenham Stadium,London,48778,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_04_20_italy_scotland,2024-04-20,Six Nations,Round 4,15s,Italy,Scotland,10,17,Stadio Sergio Lanfranchi,Parma,3000,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_04_21_wales_france,2024-04-21,Six Nations,Round 4,15s,Wales,France,0,40,Cardiff Arms Park,Cardiff,5786,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_04_27_wales_italy,2024-04-27,Six Nations,Round 5,15s,Wales,Italy,22,20,Millennium Stadium,Cardiff,10592,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_04_27_ireland_scotland,2024-04-27,Six Nations,Round 5,15s,Ireland,Scotland,15,12,Ravenhill Stadium,Belfast,7468,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2024_04_27_france_england,2024-04-27,Six Nations,Round 5,15s,France,England,21,42,Stade Chaban-Delmas,Bordeaux,28023,0,0,,https://en.wikipedia.org/wiki/2024_Women's_Six_Nations_Championship
+2023_03_25_wales_ireland,2023-03-25,Six Nations,Round 1,15s,Wales,Ireland,31,5,Cardiff Arms Park,Cardiff,4962,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_03_25_england_scotland,2023-03-25,Six Nations,Round 1,15s,England,Scotland,58,7,Kingston Park,Newcastle,10053,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_03_26_italy_france,2023-03-26,Six Nations,Round 1,15s,Italy,France,12,22,Stadio Sergio Lanfranchi,Parma,1982,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_01_ireland_france,2023-04-01,Six Nations,Round 2,15s,Ireland,France,3,53,Musgrave Park,Cork,5214,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_01_scotland_wales,2023-04-01,Six Nations,Round 2,15s,Scotland,Wales,22,34,Edinburgh Rugby Stadium,Edinburgh,3031,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_02_england_italy,2023-04-02,Six Nations,Round 2,15s,England,Italy,68,5,Franklin's Gardens,Northampton,12947,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_15_wales_england,2023-04-15,Six Nations,Round 3,15s,Wales,England,3,59,Cardiff Arms Park,Cardiff,8862,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_15_italy_ireland,2023-04-15,Six Nations,Round 3,15s,Italy,Ireland,24,7,Stadio Sergio Lanfranchi,Parma,3872,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_16_france_scotland,2023-04-16,Six Nations,Round 3,15s,France,Scotland,55,0,Stade de la Rabine,Vannes,10044,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_22_ireland_england,2023-04-22,Six Nations,Round 4,15s,Ireland,England,0,48,Musgrave Park,Cork,5309,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_22_scotland_italy,2023-04-22,Six Nations,Round 4,15s,Scotland,Italy,29,21,Edinburgh Rugby Stadium,Edinburgh,3638,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_23_france_wales,2023-04-23,Six Nations,Round 4,15s,France,Wales,39,14,Stade des Alpes,Grenoble,18604,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_29_england_france,2023-04-29,Six Nations,Round 5,15s,England,France,38,33,Twickenham Stadium,London,58498,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_29_italy_wales,2023-04-29,Six Nations,Round 5,15s,Italy,Wales,10,36,Stadio Sergio Lanfranchi,Parma,3213,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_04_29_scotland_ireland,2023-04-29,Six Nations,Round 5,15s,Scotland,Ireland,36,10,Edinburgh Rugby Stadium,Edinburgh,4862,0,0,,https://en.wikipedia.org/wiki/2023_Women's_Six_Nations_Championship
+2023_07_22_italy_spain,2023-07-22,WXV,WXV 3 final qualification,15s,Italy,Spain,23,0,,Piacenza,1035,1,0,,https://en.wikipedia.org/wiki/2023_WXV
+2023_10_21_new_zealand_france,2023-10-21,WXV,Round 1,15s,New Zealand,France,17,18,Wellington Regional Stadium,Wellington,3000,0,0,,https://en.wikipedia.org/wiki/2023_WXV
+2023_10_28_new_zealand_wales,2023-10-28,WXV,Round 2,15s,New Zealand,Wales,70,7,Forsyth Barr Stadium,Dunedin,4500,0,0,,https://en.wikipedia.org/wiki/2023_WXV
+2023_11_04_england_new_zealand,2023-11-04,WXV,Round 3,15s,England,New Zealand,33,12,Mount Smart Stadium,Auckland,10000,0,0,,https://en.wikipedia.org/wiki/2023_WXV
+2024_06_29_wales_spain,2024-06-29,WXV,,15s,Wales,Spain,52,20,Cardiff Arms Park,Cardiff,2436,0,0,,https://en.wikipedia.org/wiki/2024_WXV
+2024_09_29_canada_france,2024-09-29,WXV,Round 1,15s,Canada,France,46,24,BC Place,Vancouver,4500,0,0,,https://en.wikipedia.org/wiki/2024_WXV
+2024_10_06_new_zealand_england,2024-10-06,WXV,Round 2,15s,New Zealand,England,31,49,Langley Events Centre,Langley,1500,0,0,,https://en.wikipedia.org/wiki/2024_WXV
+2024_10_12_canada_england,2024-10-12,WXV,Round 3,15s,Canada,England,12,21,BC Place,Vancouver,3000,0,0,,https://en.wikipedia.org/wiki/2024_WXV
+2025_08_22_england_united_states,2025-08-22,Rugby World Cup,Pool A,15s,England,United States,69,7,Stadium of Light,Sunderland,42723,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_A
+2025_08_23_australia_samoa,2025-08-23,Rugby World Cup,Pool A,15s,Australia,Samoa,73,0,Salford Community Stadium,Manchester,10054,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_A
+2025_08_30_england_samoa,2025-08-30,Rugby World Cup,Pool A,15s,England,Samoa,92,3,Franklin's Gardens,Northampton,13615,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_A
+2025_08_30_united_states_australia,2025-08-30,Rugby World Cup,Pool A,15s,United States,Australia,31,31,York Community Stadium,York,7828,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_A
+2025_09_06_united_states_samoa,2025-09-06,Rugby World Cup,Pool A,15s,United States,Samoa,60,0,York Community Stadium,York,7124,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_A
+2025_09_06_england_australia,2025-09-06,Rugby World Cup,Pool A,15s,England,Australia,47,7,Brighton & Hove Albion Stadium,Brighton,30433,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_A
+2025_08_23_scotland_wales,2025-08-23,Rugby World Cup,Pool B,15s,Scotland,Wales,38,8,Salford Community Stadium,Manchester,10054,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_B
+2025_08_23_canada_fij,2025-08-23,Rugby World Cup,Pool B,15s,Canada,FIJ,65,7,York Community Stadium,York,4810,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_B
+2025_08_30_canada_wales,2025-08-30,Rugby World Cup,Pool B,15s,Canada,Wales,42,0,Salford Community Stadium,Manchester,9803,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_B
+2025_08_30_scotland_fij,2025-08-30,Rugby World Cup,Pool B,15s,Scotland,FIJ,29,15,Salford Community Stadium,Manchester,9803,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_B
+2025_09_06_canada_scotland,2025-09-06,Rugby World Cup,Pool B,15s,Canada,Scotland,40,19,Sandy Park,Exeter,14003,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_B
+2025_09_06_wales_fij,2025-09-06,Rugby World Cup,Pool B,15s,Wales,FIJ,25,28,Sandy Park,Exeter,14003,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_B
+2025_08_24_ireland_japan,2025-08-24,Rugby World Cup,Pool C,15s,Ireland,Japan,42,14,Franklin's Gardens,Northampton,13053,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_C
+2025_08_24_new_zealand_spain,2025-08-24,Rugby World Cup,Pool C,15s,New Zealand,Spain,54,8,York Community Stadium,York,7458,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_C
+2025_08_31_ireland_spain,2025-08-31,Rugby World Cup,Pool C,15s,Ireland,Spain,43,27,Franklin's Gardens,Northampton,8834,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_C
+2025_08_31_new_zealand_japan,2025-08-31,Rugby World Cup,Pool C,15s,New Zealand,Japan,62,19,Sandy Park,Exeter,13902,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_C
+2025_09_07_japan_spain,2025-09-07,Rugby World Cup,Pool C,15s,Japan,Spain,29,21,York Community Stadium,York,3779,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_C
+2025_09_07_new_zealand_ireland,2025-09-07,Rugby World Cup,Pool C,15s,New Zealand,Ireland,40,0,Brighton & Hove Albion Stadium,Brighton,30017,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_C
+2025_08_23_france_italy,2025-08-23,Rugby World Cup,Pool D,15s,France,Italy,24,0,Sandy Park,Exeter,7052,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_D
+2025_08_24_south_africa_brazil,2025-08-24,Rugby World Cup,Pool D,15s,South Africa,Brazil,66,6,Franklin's Gardens,Northampton,13053,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_D
+2025_08_31_italy_south_africa,2025-08-31,Rugby World Cup,Pool D,15s,Italy,South Africa,24,29,York Community Stadium,York,6045,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_D
+2025_08_31_france_brazil,2025-08-31,Rugby World Cup,Pool D,15s,France,Brazil,84,5,Sandy Park,Exeter,13902,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_D
+2025_09_07_italy_brazil,2025-09-07,Rugby World Cup,Pool D,15s,Italy,Brazil,64,3,Franklin's Gardens,Northampton,13268,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_D
+2025_09_07_france_south_africa,2025-09-07,Rugby World Cup,Pool D,15s,France,South Africa,57,10,Franklin's Gardens,Northampton,13268,0,0,,https://en.wikipedia.org/wiki/2025_Women's_Rugby_World_Cup_Pool_D
+wrwc2025_final,2025-09-27,Rugby World Cup,Final,15s,England,Canada,,,Allianz Stadium (Twickenham),London,81885,1,0,4,Wikipedia: 2025 Women's Rugby World Cup final
+wrwc2025_opener,2025-08-22,Rugby World Cup,Pool A,15s,England,United States,,,Stadium of Light,Sunderland,42723,0,1,4,Wikipedia: 2025 Women's Rugby World Cup Pool A
+six_nations_2023_final,2023-04-29,Six Nations,Final round,15s,England,France,,,Twickenham Stadium,London,58498,1,0,,"Sky Sports / Wikipedia: 2023 Women's Six Nations decider, record for standalone women's international at the time"
+wrwc2021_final,2022-11-12,Rugby World Cup,Final,15s,England,New Zealand,,,Eden Park,Auckland,42579,1,0,,Wikipedia: 2021 Women's Rugby World Cup final (delayed to 2022)
+wrwc2010_final,2010-08-28,Rugby World Cup,Final,15s,New Zealand,England,,,Twickenham Stoop,London,13253,1,0,,Sky Sports: 2010 WRWC final attendance

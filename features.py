@@ -1,12 +1,6 @@
 """
 Feature engineering for women's rugby match attendance prediction.
 
-Design notes
-------------
-This dataset will be SMALL (dozens, maybe low hundreds of rows even after
-you've fully populated it from Six Nations / WXV / World Cup match lists).
-That shapes every choice below:
-
 - Features are kept simple and interpretable (no high-cardinality
   one-hot explosions that would out-number your rows).
 - Team "quality" is represented by World Rugby ranking if you add it,
